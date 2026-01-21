@@ -16,6 +16,40 @@ public class Manger : MonoBehaviour
     int startX = -425;
     int startY = 435;
 
+
+
+    void SpawnPiece(GameObject piece, string pos, string name, bool isPlayerA)
+    {
+        GameObject x = Instantiate(piece, transform.Find("Tile " + pos));
+        x.name = name;
+
+        x.transform.parent.GetComponent<Tile>().data.HavePieceA = isPlayerA;
+        x.transform.parent.GetComponent<Tile>().data.HavePieceB = !isPlayerA;
+    }
+    
+    void SpawnFullPieces(bool isPlayerA)
+    {
+        char pawnRow = isPlayerA ? '2' : '7';
+        char piecesRow = isPlayerA ? '1' : '8';
+
+        for (int i = 0; i < 8; i++)
+        {
+            SpawnPiece(Pawn, Convert.ToChar(i + 'a') + "" + pawnRow, "Pawn", isPlayerA);
+        }
+
+        SpawnPiece(Rock, "a" + piecesRow, "Left Rock", isPlayerA);
+        SpawnPiece(Rock, "h" + piecesRow, "Right Rock", isPlayerA);
+
+        SpawnPiece(Knight, "b" + piecesRow, "Left Knight", isPlayerA);
+        SpawnPiece(Knight, "g" + piecesRow, "Right Knight", isPlayerA);
+
+        SpawnPiece(Bishop, "c" + piecesRow, "Left Bishop", isPlayerA);
+        SpawnPiece(Bishop, "f" + piecesRow, "Right Bishop", isPlayerA);
+
+        SpawnPiece(Queen, "d" + piecesRow, "Queen", isPlayerA);
+        SpawnPiece(King, "e" + piecesRow, "King", isPlayerA);
+    }
+
     void Start()
     {
         Color32 a = new Color32(0xFF, 0xEF, 0xD3, 0xFF);
@@ -40,45 +74,9 @@ public class Manger : MonoBehaviour
             f = !f;
         }
 
-        for (int i = 0; i < 8; i++)
-        {
-            GameObject p1 = Instantiate(Pawn, transform.Find("Tile " + Convert.ToChar(i + 'a') + '7'));
-
-            p1.GetComponent<RectTransform>().localPosition = Vector2.zero;
-
-            GameObject p2 = Instantiate(Pawn, transform.Find("Tile " + Convert.ToChar(i + 'a') + '2'));
-            p2.GetComponent<RectTransform>().localPosition = Vector2.zero;
-        }
-
-        GameObject r1 = Instantiate(Rock, transform.Find("Tile a8"));
-        GameObject r2 = Instantiate(Rock, transform.Find("Tile h8"));
-
-        GameObject r3 = Instantiate(Rock, transform.Find("Tile a1"));
-        GameObject r4 = Instantiate(Rock, transform.Find("Tile h1"));
-
-        GameObject k1 = Instantiate(Knight, transform.Find("Tile b8"));
-        GameObject k2 = Instantiate(Knight, transform.Find("Tile g8"));
-
-        GameObject k3 = Instantiate(Knight, transform.Find("Tile b1"));
-        GameObject k4 = Instantiate(Knight, transform.Find("Tile g1"));
-
-        GameObject b1 = Instantiate(Bishop, transform.Find("Tile c8"));
-        GameObject b2 = Instantiate(Bishop, transform.Find("Tile f8"));
-
-        GameObject b3 = Instantiate(Bishop, transform.Find("Tile c1"));
-        GameObject b4 = Instantiate(Bishop, transform.Find("Tile f1"));
-
-        GameObject q1 = Instantiate(Queen, transform.Find("Tile d8"));
-
-        GameObject q2 = Instantiate(Queen, transform.Find("Tile d1"));
-
-        GameObject ki1 = Instantiate(King, transform.Find("Tile e8"));
-        
-        GameObject ki2 = Instantiate(King, transform.Find("Tile e1"));
+        SpawnFullPieces(false);
+        SpawnFullPieces(true);
     }
-
-
-
 
     void Update()
     {
