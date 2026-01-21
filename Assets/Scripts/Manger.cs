@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,6 +25,8 @@ public class Manger : MonoBehaviour
                 x.GetComponent<RectTransform>().localPosition = new Vector2(startX + j * 125, startY - i * 125);
 
                 x.GetComponent<Image>().color = f ? a : b;
+
+                x.name = "Tile " + Convert.ToChar((j + 'a')) + (8 - i).ToString();
 
                 f = !f;
 
