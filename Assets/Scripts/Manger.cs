@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 public class Manger : MonoBehaviour
 {
     public GameObject Tile;
@@ -16,17 +15,18 @@ public class Manger : MonoBehaviour
     int startX = -425;
     int startY = 435;
 
-
-
     void SpawnPiece(GameObject piece, string pos, string name, bool isPlayerA)
     {
-        GameObject x = Instantiate(piece, transform.Find("Tile " + pos));
+        GameObject x = Instantiate(piece, transform.Find(pos));
         x.name = name;
 
-        x.transform.parent.GetComponent<Tile>().data.HavePieceA = isPlayerA;
-        x.transform.parent.GetComponent<Tile>().data.HavePieceB = !isPlayerA;
+        TilesManger.GetFromName(pos).HavePieceA = isPlayerA;
+        TilesManger.GetFromName(pos).HavePieceB = !isPlayerA;
+
+        TilesManger.GetFromName(pos).PieceName = name;
+        TilesManger.GetFromName(pos).drawer = x.GetComponent<IDrawer>();
     }
-    
+
     void SpawnFullPieces(bool isPlayerA)
     {
         char pawnRow = isPlayerA ? '2' : '7';
@@ -38,16 +38,13 @@ public class Manger : MonoBehaviour
         }
 
         SpawnPiece(Rock, "a" + piecesRow, "Left Rock", isPlayerA);
-        SpawnPiece(Rock, "h" + piecesRow, "Right Rock", isPlayerA);
-
         SpawnPiece(Knight, "b" + piecesRow, "Left Knight", isPlayerA);
-        SpawnPiece(Knight, "g" + piecesRow, "Right Knight", isPlayerA);
-
         SpawnPiece(Bishop, "c" + piecesRow, "Left Bishop", isPlayerA);
-        SpawnPiece(Bishop, "f" + piecesRow, "Right Bishop", isPlayerA);
-
         SpawnPiece(Queen, "d" + piecesRow, "Queen", isPlayerA);
         SpawnPiece(King, "e" + piecesRow, "King", isPlayerA);
+        SpawnPiece(Bishop, "f" + piecesRow, "Right Bishop", isPlayerA);
+        SpawnPiece(Knight, "g" + piecesRow, "Right Knight", isPlayerA);
+        SpawnPiece(Rock, "h" + piecesRow, "Right Rock", isPlayerA);
     }
 
     void Start()
@@ -57,16 +54,18 @@ public class Manger : MonoBehaviour
 
         bool f = true;
 
+        TilesManger.Init();
+
         for (int i = 0; i < 8; i++)
         {
             for (int j = 0; j < 8; j++)
             {
-                GameObject x = Instantiate(Tile.gameObject, transform);
+                GameObject x = Instantiate(Tile, transform);
                 x.GetComponent<RectTransform>().localPosition = new Vector2(startX + j * 125, startY - i * 125);
 
                 x.GetComponent<Image>().color = f ? a : b;
 
-                x.name = "Tile " + Convert.ToChar((j + 'a')) + (8 - i).ToString();
+                x.name = Convert.ToChar(j + 'a') + (8 - i).ToString();
 
                 f = !f;
             }
@@ -74,8 +73,8 @@ public class Manger : MonoBehaviour
             f = !f;
         }
 
-        SpawnFullPieces(false);
-        SpawnFullPieces(true);
+        SpawnFullPieces(true); // player a
+        SpawnFullPieces(false); // player b
     }
 
     void Update()
